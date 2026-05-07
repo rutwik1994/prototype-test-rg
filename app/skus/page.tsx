@@ -5,7 +5,24 @@ import { getSkus } from "@/lib/actions";
 export const dynamic = "force-dynamic";
 
 export default async function SkusPage() {
-  const skus = await getSkus();
+  let skus: Awaited<ReturnType<typeof getSkus>> = [];
+  let error: string | null = null;
+  try {
+    skus = await getSkus();
+  } catch (e) {
+    error = e instanceof Error ? e.message : String(e);
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-lg border border-red-200 max-w-xl w-full">
+          <h2 className="text-red-600 font-semibold mb-2">Database error</h2>
+          <pre className="text-xs text-gray-700 whitespace-pre-wrap break-all">{error}</pre>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
