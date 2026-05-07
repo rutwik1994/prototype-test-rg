@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Sku {
+  id            Int      @id @default(autoincrement())
+  name          String
+  category      String
+  unitOfMeasure String
+  costPerUnit   Float
+  status        String   @default("Active")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
