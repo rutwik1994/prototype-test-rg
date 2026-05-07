@@ -1,15 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
 export type SkuRow = {
   id: number;
   name: string;
@@ -22,38 +12,45 @@ export type SkuRow = {
 export function SkuTable({ skus }: { skus: SkuRow[] }) {
   if (skus.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm py-8 text-center">
-        No SKUs yet. Create one to get started.
+      <p className="text-gray-400 text-sm py-10 text-center">
+        No SKUs yet.
       </p>
     );
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Category</TableHead>
-          <TableHead>Unit</TableHead>
-          <TableHead>Cost (€)</TableHead>
-          <TableHead>Status</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {skus.map((sku) => (
-          <TableRow key={sku.id}>
-            <TableCell className="font-medium">{sku.name}</TableCell>
-            <TableCell>{sku.category}</TableCell>
-            <TableCell>{sku.unitOfMeasure}</TableCell>
-            <TableCell>€{sku.costPerUnit.toFixed(2)}</TableCell>
-            <TableCell>
-              <Badge variant={sku.status === "Active" ? "default" : "secondary"}>
+    <table className="w-full text-sm">
+      <thead>
+        <tr className="border-b border-gray-200 bg-gray-50">
+          <th className="text-left px-4 py-3 font-medium text-gray-600">Name</th>
+          <th className="text-left px-4 py-3 font-medium text-gray-600">Category</th>
+          <th className="text-left px-4 py-3 font-medium text-gray-600">Unit</th>
+          <th className="text-left px-4 py-3 font-medium text-gray-600">Cost (€)</th>
+          <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {skus.map((sku, i) => (
+          <tr
+            key={sku.id}
+            className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${i === skus.length - 1 ? "border-b-0" : ""}`}
+          >
+            <td className="px-4 py-3 font-medium text-gray-900">{sku.name}</td>
+            <td className="px-4 py-3 text-gray-600">{sku.category}</td>
+            <td className="px-4 py-3 text-gray-600">{sku.unitOfMeasure}</td>
+            <td className="px-4 py-3 text-gray-600">€{sku.costPerUnit.toFixed(2)}</td>
+            <td className="px-4 py-3">
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                sku.status === "Active"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-gray-100 text-gray-600"
+              }`}>
                 {sku.status}
-              </Badge>
-            </TableCell>
-          </TableRow>
+              </span>
+            </td>
+          </tr>
         ))}
-      </TableBody>
-    </Table>
+      </tbody>
+    </table>
   );
 }

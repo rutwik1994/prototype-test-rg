@@ -12,16 +12,20 @@ export default async function SkusPage() {
   const skus = MOCK_SKUS;
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-10">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold">Culinary SKUs</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            {skus.length} SKU{skus.length !== 1 ? "s" : ""} total
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      <main className="max-w-5xl mx-auto px-6 py-10">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900">Culinary SKUs</h1>
+            <p className="text-gray-500 text-sm mt-1">
+              {skus.length} SKU{skus.length !== 1 ? "s" : ""} total
+            </p>
+          </div>
         </div>
-      </div>
-      <SkuTable skus={skus} />
-    </main>
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+          <SkuTable skus={skus} />
+        </div>
+      </main>
+    </div>
   );
 }
