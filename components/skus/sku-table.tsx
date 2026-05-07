@@ -1,10 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -13,17 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { deleteSku } from "@/lib/actions";
-import type { Sku } from "@/app/generated/prisma/client";
 
-export function SkuTable({ skus }: { skus: Sku[] }) {
-  const [isPending, startTransition] = useTransition();
+export type SkuRow = {
+  id: number;
+  name: string;
+  category: string;
+  unitOfMeasure: string;
+  costPerUnit: number;
+  status: string;
+};
 
-  const handleDelete = (id: number) => {
-    if (!confirm("Delete this SKU?")) return;
-    startTransition(() => deleteSku(id));
-  };
-
+export function SkuTable({ skus }: { skus: SkuRow[] }) {
   if (skus.length === 0) {
     return (
       <p className="text-muted-foreground text-sm py-8 text-center">
@@ -41,7 +37,6 @@ export function SkuTable({ skus }: { skus: Sku[] }) {
           <TableHead>Unit</TableHead>
           <TableHead>Cost (€)</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -55,22 +50,6 @@ export function SkuTable({ skus }: { skus: Sku[] }) {
               <Badge variant={sku.status === "Active" ? "default" : "secondary"}>
                 {sku.status}
               </Badge>
-            </TableCell>
-            <TableCell className="text-right space-x-2">
-              <Link
-                href={`/skus/${sku.id}/edit`}
-                className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-              >
-                Edit
-              </Link>
-              <Button
-                variant="destructive"
-                size="sm"
-                disabled={isPending}
-                onClick={() => handleDelete(sku.id)}
-              >
-                Delete
-              </Button>
             </TableCell>
           </TableRow>
         ))}
