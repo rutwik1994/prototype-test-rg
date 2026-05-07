@@ -1,15 +1,11 @@
+import Link from "next/link";
 import { SkuTable } from "@/components/skus/sku-table";
+import { getSkus } from "@/lib/actions";
 
-const MOCK_SKUS = [
-  { id: 1, name: "Chicken Breast 250g", category: "Protein", unitOfMeasure: "kg", costPerUnit: 4.5, status: "Active", createdAt: new Date(), updatedAt: new Date() },
-  { id: 2, name: "Baby Spinach", category: "Vegetable", unitOfMeasure: "g", costPerUnit: 0.02, status: "Active", createdAt: new Date(), updatedAt: new Date() },
-  { id: 3, name: "Basmati Rice", category: "Grain", unitOfMeasure: "kg", costPerUnit: 2.1, status: "Active", createdAt: new Date(), updatedAt: new Date() },
-  { id: 4, name: "Greek Yogurt", category: "Dairy", unitOfMeasure: "L", costPerUnit: 3.8, status: "Inactive", createdAt: new Date(), updatedAt: new Date() },
-  { id: 5, name: "Pesto Sauce", category: "Sauce", unitOfMeasure: "unit", costPerUnit: 1.95, status: "Active", createdAt: new Date(), updatedAt: new Date() },
-];
+export const dynamic = "force-dynamic";
 
 export default async function SkusPage() {
-  const skus = MOCK_SKUS;
+  const skus = await getSkus();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -21,6 +17,12 @@ export default async function SkusPage() {
               {skus.length} SKU{skus.length !== 1 ? "s" : ""} total
             </p>
           </div>
+          <Link
+            href="/skus/new"
+            className="inline-flex items-center px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            + New SKU
+          </Link>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
           <SkuTable skus={skus} />

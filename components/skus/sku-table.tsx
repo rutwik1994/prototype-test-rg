@@ -1,19 +1,22 @@
 "use client";
 
-export type SkuRow = {
-  id: number;
-  name: string;
-  category: string;
-  unitOfMeasure: string;
-  costPerUnit: number;
-  status: string;
-};
+import { useTransition } from "react";
+import Link from "next/link";
+import { deleteSku } from "@/lib/actions";
+import type { Sku } from "@/app/generated/prisma/client";
 
-export function SkuTable({ skus }: { skus: SkuRow[] }) {
+export function SkuTable({ skus }: { skus: Sku[] }) {
+  const [isPending, startTransition] = useTransition();
+
+  const handleDelete = (id: number) => {
+    if (!confirm("Delete this SKU?")) return;
+    startTransition(() => deleteSku(id));
+  };
+
   if (skus.length === 0) {
     return (
       <p className="text-gray-400 text-sm py-10 text-center">
-        No SKUs yet.
+        No SKUs yet. Create one to get started.
       </p>
     );
   }
@@ -27,6 +30,7 @@ export function SkuTable({ skus }: { skus: SkuRow[] }) {
           <th className="text-left px-4 py-3 font-medium text-gray-600">Unit</th>
           <th className="text-left px-4 py-3 font-medium text-gray-600">Cost (€)</th>
           <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
+          <th className="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -47,6 +51,21 @@ export function SkuTable({ skus }: { skus: SkuRow[] }) {
               }`}>
                 {sku.status}
               </span>
+            </td>
+            <td className="px-4 py-3 text-right space-x-2">
+              <Link
+                href={`/skus/${sku.id}/edit`}
+                className="inline-flex items-center px-3 py-1 text-xs font-medium border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Edit
+              </Link>
+              <button
+                onClick={() => handleDelete(sku.id)}
+                disabled={isPending}
+                className="inline-flex items-center px-3 py-1 text-xs font-medium text-red-600 border border-red-200 rounded-md hover:bg-red-50 transition-colors disabled:opacity-50"
+              >
+                Delete
+              </button>
             </td>
           </tr>
         ))}
