@@ -2,23 +2,19 @@
 import React, { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { Sku } from "@/app/generated/prisma/client";
-import { IconEdit, IconTrash, IconSort, IconSearch, CheckBox } from "./icons";
+import { Icon, IconEdit, IconTrash, IconSort, IconSearch, CheckBox, type IconName } from "./icons";
 import { Button } from "./primitives";
 
 type SortKey = 'name' | 'category' | 'unitOfMeasure' | 'costPerUnit' | 'status';
 type SortDir = 'asc' | 'desc';
 
-const CATEGORY_ICON_CLASS: Record<string, string> = {
-  Protein:   '#067A46',
-  Vegetable: '#067A46',
-  Grain:     '#A97739',
-  Dairy:     '#1268FF',
-  Sauce:     '#EF670A',
-  Other:     '#676767',
-};
-
-const CATEGORY_INITIALS: Record<string, string> = {
-  Protein: 'P', Vegetable: 'V', Grain: 'G', Dairy: 'D', Sauce: 'S', Other: 'O',
+const CATEGORY_ICON: Record<string, { icon: IconName; color: string; bg: string }> = {
+  Protein:   { icon: 'cloche', color: '#067A46', bg: '#F6FDE9' },
+  Vegetable: { icon: 'apple',  color: '#00A846', bg: '#E4FABF' },
+  Grain:     { icon: 'book',   color: '#A97739', bg: '#F8EDCD' },
+  Dairy:     { icon: 'box',    color: '#1268FF', bg: '#E9FAFF' },
+  Sauce:     { icon: 'recipe', color: '#EF670A', bg: '#FFECD3' },
+  Other:     { icon: 'inv',    color: '#676767', bg: '#EEEEEE' },
 };
 
 const STATUS_PILL: Record<string, { bg: string; fg: string; dot: string; label: string }> = {
@@ -41,16 +37,14 @@ function StatusPill({ status }: { status: string }) {
 }
 
 function CategoryAvatar({ category }: { category: string }) {
-  const color = CATEGORY_ICON_CLASS[category] ?? '#676767';
-  const initial = CATEGORY_INITIALS[category] ?? category[0];
+  const meta = CATEGORY_ICON[category] ?? { icon: 'inv' as IconName, color: '#676767', bg: '#EEEEEE' };
   return (
     <span style={{
-      width: 32, height: 32, flexShrink: 0, borderRadius: 4,
-      background: '#F6FDE9', color,
+      width: 32, height: 32, flexShrink: 0, borderRadius: 6,
+      background: meta.bg, color: meta.color,
       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      font: '700 13px/1 var(--font-body)',
     }}>
-      {initial}
+      <Icon name={meta.icon} size={18} />
     </span>
   );
 }
