@@ -42,3 +42,10 @@ export async function deleteSku(id: number) {
   await prisma.sku.delete({ where: { id } });
   revalidatePath("/skus");
 }
+
+export async function deleteSkus(ids: number[]) {
+  for (const id of ids) {
+    await prisma.sku.delete({ where: { id } });
+  }
+  revalidatePath("/skus");
+}

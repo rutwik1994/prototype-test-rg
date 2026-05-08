@@ -3,7 +3,7 @@ import { SageHeader } from "@/components/sage/Header";
 import { SageSkuTable } from "@/components/sage/SkuTable";
 import { Button } from "@/components/sage/primitives";
 import { IconPlus } from "@/components/sage/icons";
-import { getSkus, deleteSku } from "@/lib/actions";
+import { getSkus, deleteSku, deleteSkus } from "@/lib/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +31,7 @@ export default async function SkusPage() {
       />
       <div style={{ padding: '24px 32px' }}>
         <div style={{ background: '#fff', border: '1px solid #E4E4E4', borderRadius: 8, overflow: 'hidden', boxShadow: '0 2px 4px rgba(36,36,36,.06)' }}>
-          <SageSkuTable skus={skus} onDelete={deleteSku} />
+          <SageSkuTable skus={skus} onDelete={deleteSku} onDeleteMany={deleteSkus} />
         </div>
       </div>
     </div>

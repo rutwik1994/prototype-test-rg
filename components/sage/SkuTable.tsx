@@ -59,9 +59,10 @@ const iconBtnBase: React.CSSProperties = {
 interface Props {
   skus: Sku[];
   onDelete: (id: number) => Promise<void>;
+  onDeleteMany: (ids: number[]) => Promise<void>;
 }
 
-export function SageSkuTable({ skus, onDelete }: Props) {
+export function SageSkuTable({ skus, onDelete, onDeleteMany }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -177,9 +178,25 @@ export function SageSkuTable({ skus, onDelete }: Props) {
           display: 'flex', alignItems: 'center', gap: 12, padding: '10px 20px',
           background: '#F6FDE9', borderBottom: '1px solid #D2F895',
         }}>
-          <span style={{ font: '600 13px/16px var(--font-body)', color: '#067A46' }}>{selected.size} selected</span>
+          <span style={{ font: '600 13px/16px var(--font-body)', color: '#067A46' }}>{selected.size} SKU{selected.size !== 1 ? 's' : ''} selected</span>
           <div style={{ flex: 1 }} />
-          <Button variant="text" size="sm" color="negative" onClick={() => setSelected(new Set())}>Clear selection</Button>
+          <Button variant="text" size="sm" color="neutral" onClick={() => setSelected(new Set())}>Clear</Button>
+          <Button
+            variant="fill"
+            size="sm"
+            color="negative"
+            disabled={isPending}
+            onClick={() => {
+              if (!confirm(`Delete ${selected.size} SKU${selected.size !== 1 ? 's' : ''}? This cannot be undone.`)) return;
+              const ids = Array.from(selected);
+              startTransition(async () => {
+                await onDeleteMany(ids);
+                setSelected(new Set());
+              });
+            }}
+          >
+            Delete {selected.size} SKU{selected.size !== 1 ? 's' : ''}
+          </Button>
         </div>
       )}
 
