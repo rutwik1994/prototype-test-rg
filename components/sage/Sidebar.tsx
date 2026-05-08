@@ -14,7 +14,7 @@ const GROUPS: NavGroup[] = [
   { id: 'production', label: 'Production Planning', defaultOpen: true, items: [
     { id: 'overview',     icon: 'home',   label: 'Overview',                  path: '/overview' },
     { id: 'recipes',      icon: 'recipe', label: 'Recipe Production Planning', path: '/recipes' },
-    { id: 'kitting',      icon: 'box',    label: 'Kitting Planning',           path: '/skus' },
+    { id: 'kitting',      icon: 'box',    label: 'Supply Planning',            path: '/skus' },
     { id: 'assembly',     icon: 'cloche', label: 'Assembly Planning',          path: '/assembly' },
     { id: 'setup',        icon: 'scale',  label: 'Production Setup Config',    path: '/setup' },
     { id: 'daily',        icon: 'book',   label: 'Daily Planning',             path: '/daily' },

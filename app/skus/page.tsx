@@ -13,7 +13,7 @@ export default async function SkusPage() {
   return (
     <div style={{ flex: 1 }}>
       <SageHeader
-        breadcrumbs={["Production Planning", "Kitting Planning"]}
+        breadcrumbs={["Production Planning", "Supply Planning"]}
         title="Culinary SKUs"
         subtitle={`${skus.length} SKU${skus.length !== 1 ? "s" : ""} total`}
         primaryAction={
