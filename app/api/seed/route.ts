@@ -26,6 +26,8 @@ const SKUS = [
 
 export async function POST() {
   await prisma.sku.deleteMany();
-  await prisma.sku.createMany({ data: SKUS });
+  for (const sku of SKUS) {
+    await prisma.sku.create({ data: sku });
+  }
   return NextResponse.json({ seeded: SKUS.length });
 }
