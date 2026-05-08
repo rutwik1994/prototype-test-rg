@@ -194,6 +194,44 @@ export function SageInput({
   );
 }
 
+export function SageSelect({
+  value, onChange, options, placeholder, error, ...rest
+}: {
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: { value: string; label: string }[];
+  placeholder?: string;
+  error?: boolean;
+} & Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange'>) {
+  const [focus, setFocus] = useState(false);
+  return (
+    <select
+      value={value}
+      onChange={onChange}
+      onFocus={() => setFocus(true)}
+      onBlur={() => setFocus(false)}
+      style={{
+        display: 'block', width: '100%', height: 40, padding: '0 12px',
+        borderRadius: 4, background: '#fff',
+        border: `1px solid ${error ? '#DB1D1D' : focus ? '#067A46' : '#E4E4E4'}`,
+        boxShadow: focus ? `0 0 0 3px ${error ? 'rgba(219,29,29,.18)' : 'rgba(6,122,70,.18)'}` : 'none',
+        font: '400 14px/20px var(--font-body)', color: value ? '#242424' : '#676767',
+        cursor: 'pointer', outline: 'none', appearance: 'none',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23676767' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'right 10px center',
+        paddingRight: 36,
+      }}
+      {...rest}
+    >
+      {placeholder && <option value="" disabled>{placeholder}</option>}
+      {options.map(o => (
+        <option key={o.value} value={o.value}>{o.label}</option>
+      ))}
+    </select>
+  );
+}
+
 export function Alert({
   tone = 'info', title, children, leadingIcon,
 }: {

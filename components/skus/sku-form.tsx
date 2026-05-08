@@ -4,24 +4,8 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  skuSchema,
-  type SkuFormData,
-  CATEGORIES,
-  UNITS,
-  STATUSES,
-} from "@/lib/validations";
+import { Button, Field, SageInput, SageSelect } from "@/components/sage/primitives";
+import { skuSchema, type SkuFormData, CATEGORIES, UNITS, STATUSES } from "@/lib/validations";
 import { createSku, updateSku } from "@/lib/actions";
 import type { Sku } from "@/app/generated/prisma/client";
 
@@ -33,12 +17,7 @@ export function SkuForm({ sku }: SkuFormProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<SkuFormData>({
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<SkuFormData>({
     resolver: zodResolver(skuSchema),
     defaultValues: sku
       ? {
@@ -62,125 +41,68 @@ export function SkuForm({ sku }: SkuFormProps) {
   };
 
   return (
-    <Card className="max-w-lg">
-      <CardHeader>
-        <CardTitle>{sku ? "Edit SKU" : "New Culinary SKU"}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          <div className="space-y-1">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              placeholder="e.g. Chicken Breast 250g"
-              {...register("name")}
-            />
-            {errors.name && (
-              <p className="text-sm text-red-500">{errors.name.message}</p>
-            )}
-          </div>
+    <div style={{
+      background: '#fff', border: '1px solid #E4E4E4', borderRadius: 8,
+      padding: 32, maxWidth: 520, boxShadow: '0 2px 4px rgba(36,36,36,.06)',
+    }}>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-          <div className="space-y-1">
-            <Label>Category</Label>
-            <Select
-              defaultValue={sku?.category}
-              onValueChange={(v) =>
-                setValue("category", v as SkuFormData["category"])
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {CATEGORIES.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.category && (
-              <p className="text-sm text-red-500">{errors.category.message}</p>
-            )}
-          </div>
+        <Field label="Name" error={errors.name?.message}>
+          <SageInput
+            placeholder="e.g. Chicken Breast 250g"
+            error={!!errors.name}
+            {...register("name")}
+          />
+        </Field>
 
-          <div className="space-y-1">
-            <Label>Unit of Measure</Label>
-            <Select
-              defaultValue={sku?.unitOfMeasure}
-              onValueChange={(v) =>
-                setValue("unitOfMeasure", v as SkuFormData["unitOfMeasure"])
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select unit" />
-              </SelectTrigger>
-              <SelectContent>
-                {UNITS.map((u) => (
-                  <SelectItem key={u} value={u}>
-                    {u}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.unitOfMeasure && (
-              <p className="text-sm text-red-500">
-                {errors.unitOfMeasure.message}
-              </p>
-            )}
-          </div>
+        <Field label="Category" error={errors.category?.message}>
+          <SageSelect
+            value={watch("category") ?? ""}
+            onChange={e => setValue("category", e.target.value as SkuFormData["category"])}
+            options={CATEGORIES.map(c => ({ value: c, label: c }))}
+            placeholder="Select category"
+            error={!!errors.category}
+          />
+        </Field>
 
-          <div className="space-y-1">
-            <Label htmlFor="costPerUnit">Cost per Unit (€)</Label>
-            <Input
-              id="costPerUnit"
-              type="number"
-              step="0.01"
-              placeholder="0.00"
-              {...register("costPerUnit", { valueAsNumber: true })}
-            />
-            {errors.costPerUnit && (
-              <p className="text-sm text-red-500">
-                {errors.costPerUnit.message}
-              </p>
-            )}
-          </div>
+        <Field label="Unit of Measure" error={errors.unitOfMeasure?.message}>
+          <SageSelect
+            value={watch("unitOfMeasure") ?? ""}
+            onChange={e => setValue("unitOfMeasure", e.target.value as SkuFormData["unitOfMeasure"])}
+            options={UNITS.map(u => ({ value: u, label: u }))}
+            placeholder="Select unit"
+            error={!!errors.unitOfMeasure}
+          />
+        </Field>
 
-          <div className="space-y-1">
-            <Label>Status</Label>
-            <Select
-              defaultValue={sku?.status ?? "Active"}
-              onValueChange={(v) =>
-                setValue("status", v as SkuFormData["status"])
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUSES.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {s}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <Field label="Cost per Unit (€)" error={errors.costPerUnit?.message}>
+          <SageInput
+            type="number"
+            step="0.01"
+            placeholder="0.00"
+            error={!!errors.costPerUnit}
+            {...register("costPerUnit", { valueAsNumber: true })}
+          />
+        </Field>
 
-          <div className="flex gap-3 pt-2">
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving…" : sku ? "Save changes" : "Create SKU"}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/skus")}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+        <Field label="Status">
+          <SageSelect
+            value={watch("status") ?? "Active"}
+            onChange={e => setValue("status", e.target.value as SkuFormData["status"])}
+            options={STATUSES.map(s => ({ value: s, label: s }))}
+          />
+        </Field>
+
+        <div style={{ display: 'flex', gap: 12, paddingTop: 4 }}>
+          <Button type="submit" variant="fill" color="positive" disabled={isPending}>
+            {isPending ? "Saving…" : sku ? "Save changes" : "Create SKU"}
+          </Button>
+          <Button type="button" variant="outline" color="neutral" onClick={() => router.push("/skus")}>
+            Cancel
+          </Button>
+        </div>
+
+      </form>
+    </div>
   );
 }
