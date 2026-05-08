@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sage Prototype Template
 
-## Getting Started
+A full-stack Next.js app template for building internal tool prototypes fast. Pre-wired with the Sage Enterprise Design System, Neon PostgreSQL, Prisma ORM, and Vercel deployment.
 
-First, run the development server:
+## What's included
 
+- **Sage Design System** — Sidebar, Header, Table, Form primitives, icon set, full token system
+- **Neon PostgreSQL** — serverless Postgres via `@prisma/adapter-neon`
+- **Prisma v7** — ORM with migrations, configured for Vercel serverless
+- **Next.js 16 App Router** — Server Actions for CRUD, no separate API layer
+- **React Hook Form + Zod** — type-safe form validation
+- **Vercel-ready** — `prisma generate` runs at build time
+
+## Stack
+
+| Layer | Tech |
+|---|---|
+| Framework | Next.js 16 (App Router, TypeScript) |
+| Database | Neon serverless PostgreSQL |
+| ORM | Prisma v7 |
+| UI | Sage Enterprise Design System |
+| Forms | React Hook Form + Zod v4 |
+| Deployment | Vercel |
+
+## Getting started from this template
+
+### 1. Create a new repo
+Click **"Use this template"** → **"Create a new repository"** on GitHub.
+
+### 2. Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Set up your database
+Create a free database at [neon.tech](https://neon.tech). Copy the connection string.
+```bash
+# .env.local
+DATABASE_URL="postgresql://..."
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Run migrations
+```bash
+npx prisma migrate dev --name init
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 5. Run locally
+```bash
+npm run dev
+```
 
-## Learn More
+### 6. Deploy to Vercel
+Connect your GitHub repo in the [Vercel dashboard](https://vercel.com) and add `DATABASE_URL` as a production environment variable.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Building a new feature
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Add a model in `prisma/schema.prisma`
+2. Run `npx prisma migrate dev --name <name>`
+3. Add server actions in `lib/actions.ts`
+4. Add a Zod schema in `lib/validations.ts`
+5. Build your page under `app/` using Sage components from `components/sage/`
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  layout.tsx              # AppShell — Sidebar + content wrapper
+  page.tsx                # Root redirect
+  skus/                   # Example feature: Culinary SKU manager
+    page.tsx
+    new/page.tsx
+    [id]/edit/page.tsx
+components/
+  sage/                   # Sage Design System — reuse across all features
+    AppShell.tsx
+    Header.tsx
+    Sidebar.tsx
+    SkuTable.tsx
+    icons.tsx
+    primitives.tsx
+  skus/
+    sku-form.tsx
+lib/
+  actions.ts              # Server Actions (CRUD)
+  db.ts                   # Prisma client singleton
+  validations.ts          # Zod schemas
+prisma/
+  schema.prisma
+  migrations/
+public/
+  icons/                  # Sage SVG icon set (10 icons)
+  AgrandirDigital-Medium.woff2
+```
